@@ -39,7 +39,7 @@ namespace Test
             {
                 Console.WriteLine($"Path: {file}");
 
-                Console.WriteLine("Currently, this program does nothing. It will have reference implementations for all supported files in the future.")
+                Console.WriteLine("Currently, this program does nothing. It will have reference implementations for all supported files in the future.");
             }
             catch (Exception ex)
             {
