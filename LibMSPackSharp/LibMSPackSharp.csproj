@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <Title>LibMSPackSharp</Title>
+    <AssemblyName>LibMSPackSharp</AssemblyName>
+    <Description>Port of libmspack to C#, with additions</Description>
+    <Authors>Matt Nadareski;Stuart Caie</Authors>
+    <Product>HLLibSharp</Product>
+    <Copyright>Copyright (c)2000-2022 Stuart Caie, Copyright (c)2022 Matt Nadareski</Copyright>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/mnadareski/LibMSPackSharp</RepositoryUrl>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <FileVersion>2.0.0</FileVersion>
+    <IncludeSource>true</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE.txt" Pack="true" PackagePath="$(PackageLicenseFile)" />
+  </ItemGroup>
+
+</Project>
