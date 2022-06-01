@@ -244,7 +244,7 @@ namespace LibMSPackSharp.Compression
 
                             default:
                                 // Should be impossible, model7 can only return 0-6
-                                Console.WriteLine($"Got {selector} from selector");
+                                if (Debug) Console.WriteLine($"Got {selector} from selector");
                                 return Error = Error.MSPACK_ERR_DECRUNCH;
                         }
 
@@ -274,7 +274,7 @@ namespace LibMSPackSharp.Compression
                             // finished writing the match). Bail out in this case
                             if (i > out_bytes)
                             {
-                                Console.WriteLine($"During window-wrap match; {i} bytes to flush but only need {out_bytes}");
+                                if (Debug) Console.WriteLine($"During window-wrap match; {i} bytes to flush but only need {out_bytes}");
                                 return Error = Error.MSPACK_ERR_DECRUNCH;
                             }
 
@@ -309,7 +309,7 @@ namespace LibMSPackSharp.Compression
                                 j = (int)(match_offset - window_posn);
                                 if (j > (int)WindowSize)
                                 {
-                                    Console.WriteLine("Match offset beyond window boundaries");
+                                    if (Debug) Console.WriteLine("Match offset beyond window boundaries");
                                     return Error = Error.MSPACK_ERR_DECRUNCH;
                                 }
 
@@ -351,7 +351,7 @@ namespace LibMSPackSharp.Compression
                 // wrap around past zero and go above its max value
                 if (frame_todo > QTM_FRAME_SIZE)
                 {
-                    Console.WriteLine("Overshot frame alignment");
+                    if (Debug) Console.WriteLine("Overshot frame alignment");
                     return Error = Error.MSPACK_ERR_DECRUNCH;
                 }
 

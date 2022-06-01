@@ -139,7 +139,7 @@ namespace LibMSPackSharp.Compression
 
                 if ((error = Inflate()) != Error.MSPACK_ERR_OK)
                 {
-                    Console.WriteLine($"Inflate error {error}");
+                    if (Debug) Console.WriteLine($"Inflate error {error}");
                     if (RepairMode)
                     {
                         // Recover partially-inflated buffers
@@ -178,7 +178,7 @@ namespace LibMSPackSharp.Compression
 
             if (out_bytes > 0)
             {
-                Console.WriteLine($"Bytes left to output: {out_bytes}");
+                if (Debug) Console.WriteLine($"Bytes left to output: {out_bytes}");
                 return Error = Error.MSPACK_ERR_DECRUNCH;
             }
 
@@ -223,7 +223,7 @@ namespace LibMSPackSharp.Compression
 
                 if ((error = Inflate()) != Error.MSPACK_ERR_OK)
                 {
-                    Console.WriteLine($"Inflate error {error}");
+                    if (Debug) Console.WriteLine($"Inflate error {error}");
                     return Error = (error > 0) ? error : Error.MSPACK_ERR_DECRUNCH;
                 }
 
@@ -310,7 +310,7 @@ namespace LibMSPackSharp.Compression
                             break;
 
                         default:
-                            Console.WriteLine($"Bad code!: {code}");
+                            if (Debug) Console.WriteLine($"Bad code!: {code}");
                             return Error.INF_ERR_BADBITLEN;
                     }
 
@@ -603,7 +603,7 @@ namespace LibMSPackSharp.Compression
             BytesOutput += (int)data_flushed;
             if (BytesOutput > MSZIP_FRAME_SIZE)
             {
-                Console.WriteLine($"Overflow: {data_flushed} bytes flushed, total is now {BytesOutput}");
+                if (Debug) Console.WriteLine($"Overflow: {data_flushed} bytes flushed, total is now {BytesOutput}");
                 return Error.MSPACK_ERR_ARGS;
             }
 

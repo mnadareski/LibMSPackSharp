@@ -191,25 +191,25 @@ namespace LibMSPackSharp.Compression
         {
             if (!IsDelta)
             {
-                Console.WriteLine("Only LZX DELTA streams support reference data");
+                if (Debug) Console.WriteLine("Only LZX DELTA streams support reference data");
                 return Error.MSPACK_ERR_ARGS;
             }
 
             if (Offset > 0)
             {
-                Console.WriteLine("Too late to set reference data after decoding starts");
+                if (Debug) Console.WriteLine("Too late to set reference data after decoding starts");
                 return Error.MSPACK_ERR_ARGS;
             }
 
             if (length > WindowSize)
             {
-                Console.WriteLine($"Reference length ({length}) is longer than the window");
+                if (Debug) Console.WriteLine($"Reference length ({length}) is longer than the window");
                 return Error.MSPACK_ERR_ARGS;
             }
 
             if (length > 0 && (system == null || input == null))
             {
-                Console.WriteLine("Length > 0 but no system or input");
+                if (Debug) Console.WriteLine("Length > 0 but no system or input");
                 return Error.MSPACK_ERR_ARGS;
             }
 
@@ -302,7 +302,7 @@ namespace LibMSPackSharp.Compression
                     if (BlockRemaining > 0)
                     {
                         // This is a file format error, we can make a best effort to extract what we can
-                        Console.WriteLine($"{BlockRemaining} bytes remaining at reset interval");
+                        if (Debug) Console.WriteLine($"{BlockRemaining} bytes remaining at reset interval");
                         if (warned == 0)
                         {
                             System.Message(null, "WARNING; invalid reset interval detected during LZX decompression");
@@ -364,7 +364,7 @@ namespace LibMSPackSharp.Compression
                         i = (int)READ_BITS_MSB(16);
                         j = (int)READ_BITS_MSB(8);
                         BlockRemaining = BlockLength = (i << 8) | j;
-                        Console.WriteLine($"New block - type: {BlockType}, length: {BlockLength}");
+                        if (Debug) Console.WriteLine($"New block - type: {BlockType}, length: {BlockLength}");
 
                         // Read individual block headers
                         switch (BlockType)
@@ -434,7 +434,7 @@ namespace LibMSPackSharp.Compression
                                 break;
 
                             default:
-                                Console.WriteLine($"Bad block type {BlockType}");
+                                if (Debug) Console.WriteLine($"Bad block type {BlockType}");
                                 return Error = Error.MSPACK_ERR_DECRUNCH;
                         }
                     }
@@ -474,7 +474,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (LENGTH_empty)
                                         {
-                                            Console.WriteLine("LENGTH symbol needed but tree is empty");
+                                            if (Debug) Console.WriteLine("LENGTH symbol needed but tree is empty");
                                             return Error = Error.MSPACK_ERR_DECRUNCH;
                                         }
 
@@ -585,7 +585,7 @@ namespace LibMSPackSharp.Compression
 
                                     if ((WindowPosition + match_length) > WindowSize)
                                     {
-                                        Console.WriteLine("Match ran over window wrap");
+                                        if (Debug) Console.WriteLine("Match ran over window wrap");
                                         return Error = Error.MSPACK_ERR_DECRUNCH;
                                     }
 
@@ -602,7 +602,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (match_offset > Offset && (match_offset - WindowPosition) > ReferenceDataSize)
                                         {
-                                            Console.WriteLine("Match offset beyond LZX stream");
+                                            if (Debug) Console.WriteLine("Match offset beyond LZX stream");
                                             return Error = Error.MSPACK_ERR_DECRUNCH;
                                         }
 
@@ -610,7 +610,7 @@ namespace LibMSPackSharp.Compression
                                         j = (int)match_offset - WindowPosition;
                                         if (j > (int)WindowSize)
                                         {
-                                            Console.WriteLine("Match offset beyond window boundaries");
+                                            if (Debug) Console.WriteLine("Match offset beyond window boundaries");
                                             return Error = Error.MSPACK_ERR_DECRUNCH;
                                         }
 
@@ -693,7 +693,7 @@ namespace LibMSPackSharp.Compression
                 // Streams don't extend over frame boundaries
                 if ((WindowPosition - FramePosition) != frame_size)
                 {
-                    Console.WriteLine($"Decode beyond output frame limits {WindowPosition - FramePosition} != {frame_size}");
+                    if (Debug) Console.WriteLine($"Decode beyond output frame limits {WindowPosition - FramePosition} != {frame_size}");
                     return Error = Error.MSPACK_ERR_DECRUNCH;
                 }
 
@@ -776,7 +776,7 @@ namespace LibMSPackSharp.Compression
 
             if (out_bytes > 0)
             {
-                Console.WriteLine($"{out_bytes} bytes left to output");
+                if (Debug) Console.WriteLine($"{out_bytes} bytes left to output");
                 return Error = Error.MSPACK_ERR_DECRUNCH;
             }
 

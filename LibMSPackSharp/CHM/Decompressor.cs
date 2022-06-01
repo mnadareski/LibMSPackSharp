@@ -119,6 +119,7 @@ namespace LibMSPackSharp.CHM
                 Header = chm,
                 Offset = 0,
                 State = null,
+                Debug = Debug,
                 System = System,
                 InputFileHandle = null,
                 OutputFileHandle = null,
@@ -221,14 +222,14 @@ namespace LibMSPackSharp.CHM
             // Read ControlData
             if (sec.Control.Length != _LZXControlData.Size)
             {
-                Console.WriteLine("ControlData file is wrong size");
+                if (Debug) Console.WriteLine("ControlData file is wrong size");
                 return Error = Error.MSPACK_ERR_DATAFORMAT;
             }
 
             byte[] data = ReadSysFile(sec.Control);
             if (data == null)
             {
-                Console.WriteLine("Can't read mscompressed control data file");
+                if (Debug) Console.WriteLine("Can't read mscompressed control data file");
                 return Error;
             }
 
@@ -245,7 +246,7 @@ namespace LibMSPackSharp.CHM
             // Validate reset_interval
             if (lzxControlData.ResetInterval == 0 || (lzxControlData.ResetInterval % LZX_FRAME_SIZE) > 0)
             {
-                Console.WriteLine("Bad controldata reset interval");
+                if (Debug) Console.WriteLine("Bad controldata reset interval");
                 return Error = Error.MSPACK_ERR_DATAFORMAT;
             }
 
@@ -513,7 +514,7 @@ namespace LibMSPackSharp.CHM
                             {
                                 if (p >= end)
                                 {
-                                    Console.WriteLine("Read beyond end of chunk entries");
+                                    if (Debug) Console.WriteLine("Read beyond end of chunk entries");
                                     System.Close(fh);
                                     return Error = Error.MSPACK_ERR_DATAFORMAT;
                                 }
@@ -556,7 +557,7 @@ namespace LibMSPackSharp.CHM
                     {
                         if (p >= end)
                         {
-                            Console.WriteLine("Read beyond end of chunk entries");
+                            if (Debug) Console.WriteLine("Read beyond end of chunk entries");
                             System.Close(fh);
                             return Error = Error.MSPACK_ERR_DATAFORMAT;
                         }
@@ -574,7 +575,7 @@ namespace LibMSPackSharp.CHM
                     {
                         if (p >= end)
                         {
-                            Console.WriteLine("Read beyond end of chunk entries");
+                            if (Debug) Console.WriteLine("Read beyond end of chunk entries");
                             System.Close(fh);
                             return Error = Error.MSPACK_ERR_DATAFORMAT;
                         }
@@ -590,7 +591,7 @@ namespace LibMSPackSharp.CHM
                     {
                         if (p >= end)
                         {
-                            Console.WriteLine("Read beyond end of chunk entries");
+                            if (Debug) Console.WriteLine("Read beyond end of chunk entries");
                             System.Close(fh);
                             return Error = Error.MSPACK_ERR_DATAFORMAT;
                         }
@@ -795,7 +796,7 @@ namespace LibMSPackSharp.CHM
             // Check if content offset or file size is wrong
             if (chm.Sec0.Offset > chm.HeaderSection0.FileLength)
             {
-                Console.WriteLine("Content section begins after file has ended");
+                if (Debug) Console.WriteLine("Content section begins after file has ended");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
@@ -803,13 +804,13 @@ namespace LibMSPackSharp.CHM
             // large enough for signature and num_entries
             if (chm.HeaderSection1.ChunkSize < (_PMGHeader.PMGLSize + 2))
             {
-                Console.WriteLine("Chunk size not large enough");
+                if (Debug) Console.WriteLine("Chunk size not large enough");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
             if (chm.HeaderSection1.NumChunks == 0)
             {
-                Console.WriteLine("No chunks");
+                if (Debug) Console.WriteLine("No chunks");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
@@ -818,19 +819,19 @@ namespace LibMSPackSharp.CHM
             // cache is implemented, put arbitrary limits on NumChunks and chunk size.
             if (chm.HeaderSection1.NumChunks > 100000)
             {
-                Console.WriteLine("More than 100,000 chunks");
+                if (Debug) Console.WriteLine("More than 100,000 chunks");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
             if (chm.HeaderSection1.ChunkSize > 8192)
             {
-                Console.WriteLine("Chunk size over 8192 (get in touch if this is valid)");
+                if (Debug) Console.WriteLine("Chunk size over 8192 (get in touch if this is valid)");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
             if (chm.HeaderSection1.ChunkSize * (long)chm.HeaderSection1.NumChunks > chm.HeaderSection0.FileLength)
             {
-                Console.WriteLine("Chunks larger than entire file");
+                if (Debug) Console.WriteLine("Chunks larger than entire file");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
@@ -843,13 +844,13 @@ namespace LibMSPackSharp.CHM
 
             if (chm.HeaderSection1.FirstPMGL > chm.HeaderSection1.LastPMGL)
             {
-                Console.WriteLine("First pmgl chunk is after last pmgl chunk");
+                if (Debug) Console.WriteLine("First pmgl chunk is after last pmgl chunk");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
             if (chm.HeaderSection1.IndexRoot != 0xFFFFFFFF && chm.HeaderSection1.IndexRoot >= chm.HeaderSection1.NumChunks)
             {
-                Console.WriteLine("IndexRoot outside valid range");
+                if (Debug) Console.WriteLine("IndexRoot outside valid range");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
@@ -906,7 +907,7 @@ namespace LibMSPackSharp.CHM
                         {
                             if (p >= end)
                             {
-                                Console.WriteLine("Read beyond end of chunk entries");
+                                if (Debug) Console.WriteLine("Read beyond end of chunk entries");
                                 System.Close(fh);
                                 return Error = Error.MSPACK_ERR_DATAFORMAT;
                             }
@@ -919,7 +920,7 @@ namespace LibMSPackSharp.CHM
                     {
                         if (numEntries >= 0)
                         {
-                            Console.WriteLine("Chunk ended before all entries could be read");
+                            if (Debug) Console.WriteLine("Chunk ended before all entries could be read");
                             errors++;
                         }
                     }
@@ -933,7 +934,7 @@ namespace LibMSPackSharp.CHM
                         {
                             if (p >= end)
                             {
-                                Console.WriteLine("Read beyond end of chunk entries");
+                                if (Debug) Console.WriteLine("Read beyond end of chunk entries");
                                 System.Close(fh);
                                 return Error = Error.MSPACK_ERR_DATAFORMAT;
                             }
@@ -949,7 +950,7 @@ namespace LibMSPackSharp.CHM
                         {
                             if (p >= end)
                             {
-                                Console.WriteLine("Read beyond end of chunk entries");
+                                if (Debug) Console.WriteLine("Read beyond end of chunk entries");
                                 System.Close(fh);
                                 return Error = Error.MSPACK_ERR_DATAFORMAT;
                             }
@@ -965,7 +966,7 @@ namespace LibMSPackSharp.CHM
                         {
                             if (p >= end)
                             {
-                                Console.WriteLine("Read beyond end of chunk entries");
+                                if (Debug) Console.WriteLine("Read beyond end of chunk entries");
                                 System.Close(fh);
                                 return Error = Error.MSPACK_ERR_DATAFORMAT;
                             }
@@ -1059,20 +1060,20 @@ namespace LibMSPackSharp.CHM
             // Read ResetTable file
             if (sec.ResetTable.Length < _LZXResetTable.Size)
             {
-                Console.WriteLine("ResetTable file is too short");
+                if (Debug) Console.WriteLine("ResetTable file is too short");
                 return false;
             }
 
             if (sec.ResetTable.Length > 1000000)
             {
                 // Arbitrary upper limit 
-                Console.WriteLine($"ResetTable >1MB ({sec.ResetTable.Length}), report if genuine");
+                if (Debug) Console.WriteLine($"ResetTable >1MB ({sec.ResetTable.Length}), report if genuine");
                 return false;
             }
 
             if ((data = ReadSysFile(sec.ResetTable)) == null)
             {
-                Console.WriteLine("can't read reset table");
+                if (Debug) Console.WriteLine("can't read reset table");
                 return false;
             }
 
@@ -1084,7 +1085,7 @@ namespace LibMSPackSharp.CHM
             // Check sanity of reset table
             if (lzxResetTable.FrameLength != LZX_FRAME_SIZE)
             {
-                Console.WriteLine("Bad reset table frame length");
+                if (Debug) Console.WriteLine("Bad reset table frame length");
                 return false;
             }
 
@@ -1107,14 +1108,14 @@ namespace LibMSPackSharp.CHM
                         offsetPointer = BitConverter.ToInt64(data, (int)pos);
                         break;
                     default:
-                        Console.WriteLine("Reset table entry size neither 4 nor 8");
+                        if (Debug) Console.WriteLine("Reset table entry size neither 4 nor 8");
                         err = Error.MSPACK_ERR_ARGS;
                         break;
                 }
             }
             else
             {
-                Console.WriteLine("Bad reset interval");
+                if (Debug) Console.WriteLine("Bad reset interval");
                 err = Error.MSPACK_ERR_ARGS;
             }
 
@@ -1141,7 +1142,7 @@ namespace LibMSPackSharp.CHM
             // Check it's large enough
             if (sec.SpanInfo.Length != 8)
             {
-                Console.WriteLine("SpanInfo file is wrong size");
+                if (Debug) Console.WriteLine("SpanInfo file is wrong size");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
@@ -1149,7 +1150,7 @@ namespace LibMSPackSharp.CHM
             byte[] data;
             if ((data = ReadSysFile(sec.SpanInfo)) == null)
             {
-                Console.WriteLine("can't read SpanInfo file");
+                if (Debug) Console.WriteLine("Can't read SpanInfo file");
                 return Error;
             }
 
@@ -1157,7 +1158,7 @@ namespace LibMSPackSharp.CHM
             length_ptr = BitConverter.ToInt64(data, 0);
             if (length_ptr <= 0)
             {
-                Console.WriteLine("output length is invalid");
+                if (Debug) Console.WriteLine("Output length is invalid");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
@@ -1317,7 +1318,7 @@ namespace LibMSPackSharp.CHM
                         {
                             if (p >= end)
                             {
-                                Console.WriteLine("Reached end of chunk data while searching");
+                                if (Debug) Console.WriteLine("Reached end of chunk data while searching");
                                 return -1;
                             }
 
@@ -1327,7 +1328,7 @@ namespace LibMSPackSharp.CHM
 
                     if (nameLen > (uint)(end - p))
                     {
-                        Console.WriteLine("reached end of chunk data while searching");
+                        if (Debug) Console.WriteLine("Reached end of chunk data while searching");
                         return -1;
                     }
 
@@ -1388,7 +1389,7 @@ namespace LibMSPackSharp.CHM
                     {
                         if (p >= end)
                         {
-                            Console.WriteLine("Reached end of chunk data while searching");
+                            if (Debug) Console.WriteLine("Reached end of chunk data while searching");
                             return -1;
                         }
 
@@ -1398,7 +1399,7 @@ namespace LibMSPackSharp.CHM
 
                 if (nameLen > (uint)(end - p))
                 {
-                    Console.WriteLine("reached end of chunk data while searching");
+                    if (Debug) Console.WriteLine("Reached end of chunk data while searching");
                     return -1;
                 }
 
@@ -1430,7 +1431,7 @@ namespace LibMSPackSharp.CHM
                         {
                             if (p >= end)
                             {
-                                Console.WriteLine("reached end of chunk data while searching");
+                                if (Debug) Console.WriteLine("Reached end of chunk data while searching");
                                 return -1;
                             }
 
@@ -1451,7 +1452,7 @@ namespace LibMSPackSharp.CHM
                         {
                             if (p >= end)
                             {
-                                Console.WriteLine("Reached end of chunk data while searching");
+                                if (Debug) Console.WriteLine("Reached end of chunk data while searching");
                                 return -1;
                             }
 

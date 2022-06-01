@@ -27,7 +27,7 @@ namespace LibMSPackSharp.Compression
         {
             if (!MakeDecodeTableMSB(maxsymbols, tablebits, lengths, table))
             {
-                Console.WriteLine("Failed to build table");
+                if (Debug) Console.WriteLine("Failed to build table");
                 return Error = Error.MSPACK_ERR_DECRUNCH;
             }
 
@@ -43,7 +43,7 @@ namespace LibMSPackSharp.Compression
                 {
                     if (LENGTH_len[i] > 0)
                     {
-                        Console.WriteLine("Failed to build LENGTH table");
+                        if (Debug) Console.WriteLine("Failed to build LENGTH table");
                         return Error = Error.MSPACK_ERR_DECRUNCH;
                     }
                 }

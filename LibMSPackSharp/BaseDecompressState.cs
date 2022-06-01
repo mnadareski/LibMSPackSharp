@@ -14,6 +14,11 @@ namespace LibMSPackSharp
     public abstract class BaseDecompressState
     {
         /// <summary>
+        /// Enables debug logging to be output to console
+        /// </summary>
+        public bool Debug { get; set; } = false;
+
+        /// <summary>
         /// System wrapper for I/O operations
         /// </summary>
         public SystemImpl System { get; set; }

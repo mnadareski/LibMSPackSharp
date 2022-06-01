@@ -332,6 +332,7 @@ namespace LibMSPackSharp.CAB
                 {
                     Folder = null,
                     Data = null,
+                    Debug = Debug,
                     System = System,
                     DecompressorState = null,
                     InputFileHandle = null,
@@ -508,6 +509,7 @@ namespace LibMSPackSharp.CAB
                     return Error = Error.MSPACK_ERR_DATAFORMAT;
             }
 
+            State.DecompressorState.Debug = Debug;
             return Error = (State.DecompressorState != null) ? Error.MSPACK_ERR_OK : Error.MSPACK_ERR_NOMEMORY;
         }
 
@@ -589,7 +591,7 @@ namespace LibMSPackSharp.CAB
                         if (!Salvage)
                             ReadError = Error.MSPACK_ERR_DATAFORMAT;
                         else
-                            Console.WriteLine("Ran out of CAB input blocks prematurely");
+                            if (Debug) Console.WriteLine("Ran out of CAB input blocks prematurely");
 
                         break;
                     }
@@ -669,7 +671,7 @@ namespace LibMSPackSharp.CAB
                 full_len = (State.InputEnd - State.InputPointer) + dataBlockHeader.CompressedSize; // Include cab-spanning blocks
                 if (full_len > CAB_INPUTMAX)
                 {
-                    Console.WriteLine($"Block size ({full_len}) > {CAB_INPUTMAX}");
+                    if (Debug) Console.WriteLine($"Block size ({full_len}) > {CAB_INPUTMAX}");
 
                     // In salvage mode, blocks can be 65535 bytes but no more than that
                     if (!ignore_blocksize || full_len > CAB_INPUTMAX_SALVAGE)
@@ -679,7 +681,7 @@ namespace LibMSPackSharp.CAB
                 // Blocks must not expand to more than CAB_BLOCKMAX 
                 if (dataBlockHeader.UncompressedSize > CAB_BLOCKMAX)
                 {
-                    Console.WriteLine($"Block size ({dataBlockHeader.UncompressedSize}) > {CAB_BLOCKMAX}");
+                    if (Debug) Console.WriteLine($"Block size ({dataBlockHeader.UncompressedSize}) > {CAB_BLOCKMAX}");
                     if (!ignore_blocksize)
                         return Error.MSPACK_ERR_DATAFORMAT;
                 }
@@ -782,14 +784,14 @@ namespace LibMSPackSharp.CAB
             // Check that both folders use the same compression method/settings
             if (lfol.Header.CompType != rfol.Header.CompType)
             {
-                Console.WriteLine("Folder merge: compression type mismatch");
+                if (Debug) Console.WriteLine("Folder merge: compression type mismatch");
                 return false;
             }
 
             // Check there are not too many data blocks after merging
             if ((lfol.Header.NumBlocks + rfol.Header.NumBlocks) > CAB_FOLDERMAX)
             {
-                Console.WriteLine("Folder merge: too many data blocks in merged folders");
+                if (Debug) Console.WriteLine("Folder merge: too many data blocks in merged folders");
                 return false;
             }
 
@@ -800,7 +802,7 @@ namespace LibMSPackSharp.CAB
             // Check that we can merge the two cabinets
             if (lfi == null || rfi == null)
             {
-                Console.WriteLine("Folder merge: one cabinet has no files to merge");
+                if (Debug) Console.WriteLine("Folder merge: one cabinet has no files to merge");
                 return false;
             }
 
@@ -1011,7 +1013,7 @@ namespace LibMSPackSharp.CAB
             }
 
             if (false_cabs > 0)
-                Console.WriteLine($"{false_cabs} false cabinets found");
+                if (Debug) Console.WriteLine($"{false_cabs} false cabinets found");
 
             return Error.MSPACK_ERR_OK;
         }
@@ -1029,14 +1031,14 @@ namespace LibMSPackSharp.CAB
             // Basic args check
             if (lcab == null || rcab == null || (lcab == rcab))
             {
-                Console.WriteLine("lcab null, rcab null or lcab = rcab");
+                if (Debug) Console.WriteLine("lcab null, rcab null or lcab = rcab");
                 return Error = Error.MSPACK_ERR_ARGS;
             }
 
             // Check there's not already a cabinet attached
             if (lcab.NextCabinet != null || rcab.PreviousCabinet != null)
             {
-                Console.WriteLine("Cabs already joined");
+                if (Debug) Console.WriteLine("Cabs already joined");
                 return Error = Error.MSPACK_ERR_ARGS;
             }
 
@@ -1045,7 +1047,7 @@ namespace LibMSPackSharp.CAB
             {
                 if (cab == rcab)
                 {
-                    Console.WriteLine("circular!");
+                    if (Debug) Console.WriteLine("Circular!");
                     return Error = Error.MSPACK_ERR_ARGS;
                 }
             }
@@ -1054,7 +1056,7 @@ namespace LibMSPackSharp.CAB
             {
                 if (cab == lcab)
                 {
-                    Console.WriteLine("circular!");
+                    if (Debug) Console.WriteLine("Circular!");
                     return Error = Error.MSPACK_ERR_ARGS;
                 }
             }
@@ -1291,7 +1293,7 @@ namespace LibMSPackSharp.CAB
             {
                 // We never actually added any files to the file list.  Something went wrong.
                 // The file header may have been invalid
-                Console.WriteLine($"No files found, even though header claimed to have {cab.Header.NumFiles} files");
+                if (Debug) Console.WriteLine($"No files found, even though header claimed to have {cab.Header.NumFiles} files");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
@@ -1337,7 +1339,7 @@ namespace LibMSPackSharp.CAB
                 }
                 else
                 {
-                    Console.WriteLine("Invalid folder index");
+                    if (Debug) Console.WriteLine("Invalid folder index");
                     file.Folder = null;
                 }
             }
