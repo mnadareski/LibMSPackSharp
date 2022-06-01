@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using LibMSPackSharp;
+using LibMSPackSharp.CAB;
+using LibMSPackSharp.CABExtract;
 
 namespace Test
 {
@@ -39,7 +41,19 @@ namespace Test
             {
                 Console.WriteLine($"Path: {file}");
 
-                Console.WriteLine("Currently, this program does nothing. It will have reference implementations for all supported files in the future.");
+                // CAB Implementation
+                Console.WriteLine("Cabinet information dumper by Stuart Caie <kyzer@cabextract.org.uk>. Ported to C# by Matt Nadareski.");
+
+                Cabinet found = CABInfo.Search(file);
+                if (found == null)
+                {
+                    Console.WriteLine($"Could not find a cabinet in the file provided. Skipping...");
+                    return;
+                }
+
+                CABInfo.GetInfo(found);
+
+                CABExtract.Extract(paths: new List<string> { file });
             }
             catch (Exception ex)
             {

@@ -50,7 +50,7 @@ namespace LibMSPackSharp.Compression
         /// </param>
         /// <param name="mode">one of LZSSMode values</param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        public static Error Decompress(SystemImpl system, FileStream input, FileStream output, int input_buffer_size, LZSSMode mode)
+        public static Error Decompress(SystemImpl system, Stream input, Stream output, int input_buffer_size, LZSSMode mode)
         {
             // Check parameters
             if (system == null || input_buffer_size < 1 || (mode != LZSSMode.LZSS_MODE_EXPAND && mode != LZSSMode.LZSS_MODE_MSHELP && mode != LZSSMode.LZSS_MODE_QBASIC))

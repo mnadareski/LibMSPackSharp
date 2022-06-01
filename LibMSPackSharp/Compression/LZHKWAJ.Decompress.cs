@@ -26,7 +26,7 @@ namespace LibMSPackSharp.Compression
     /// </summary>
     public partial class LZHKWAJ
     {
-        public static LZHKWAJ Init(SystemImpl sys, FileStream input, FileStream output)
+        public static LZHKWAJ Init(SystemImpl sys, Stream input, Stream output)
         {
             if (sys == null || input == null || output == null)
                 return null;

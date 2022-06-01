@@ -132,7 +132,7 @@ namespace LibMSPackSharp.CHM
                 return Error = Error.MSPACK_ERR_OPEN;
 
             // Open file for output
-            FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE);
+            Stream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE);
             if (fh == null)
                 return Error = Error.MSPACK_ERR_OPEN;
 
@@ -322,7 +322,7 @@ namespace LibMSPackSharp.CHM
 
                 return bytes;
             }
-            else if (file is FileStream impl)
+            else if (file is Stream impl)
             {
                 return SystemImpl.DefaultSystem.Write(impl, buffer, offset, bytes);
             }
@@ -338,7 +338,7 @@ namespace LibMSPackSharp.CHM
         /// <summary>
         /// Extract a Section 0 file
         /// </summary>
-        private Error ExtractSection0File(DecompressFile file, FileStream fh)
+        private Error ExtractSection0File(DecompressFile file, Stream fh)
         {
             // Simple seek + copy
             if (!System.Seek(State.InputFileHandle, file.Section.Header.Sec0.Offset + file.Offset, SeekMode.MSPACK_SYS_SEEK_START))
@@ -377,7 +377,7 @@ namespace LibMSPackSharp.CHM
         /// <summary>
         /// Extract a Section 1 file
         /// </summary>
-        private Error ExtractSection1File(DecompressFile file, FileStream fh)
+        private Error ExtractSection1File(DecompressFile file, Stream fh)
         {
             // (Re)initialise compression state if we it is not yet initialised,
             // or we have advanced too far and have to backtrack
@@ -477,7 +477,7 @@ namespace LibMSPackSharp.CHM
             // Clear the results structure
             f_ptr = new DecompressFile();
 
-            FileStream fh = System.Open(chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            Stream fh = System.Open(chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
             if (fh == null)
                 return Error.MSPACK_ERR_OPEN;
 
@@ -641,7 +641,7 @@ namespace LibMSPackSharp.CHM
         /// Reads the given chunk into memory, storing it in a chunk cache
         /// so it doesn't need to be read from disk more than once
         /// </summary>
-        private byte[] ReadChunk(CHM chm, FileStream fh, uint chunkNum)
+        private byte[] ReadChunk(CHM chm, Stream fh, uint chunkNum)
         {
             // Check arguments - most are already checked by chmd_fast_find
             if (chunkNum >= chm.HeaderSection1.NumChunks)
@@ -687,7 +687,7 @@ namespace LibMSPackSharp.CHM
         /// non-zero, all file entries will also be read. fills out a pre-existing
         /// mschmd_header structure, allocates memory for files as necessary
         /// </summary>
-        private Error ReadHeaders(FileStream fh, CHM chm, bool entire)
+        private Error ReadHeaders(Stream fh, CHM chm, bool entire)
         {
             uint section, nameLen, x, errors, numChunks;
             byte[] buf = new byte[0x54];
@@ -1200,7 +1200,7 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         private CHM RealOpen(string filename, bool entire)
         {
-            FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            Stream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             if (fh != null)
             {
                 CHM chm = new CHM() { Filename = filename };

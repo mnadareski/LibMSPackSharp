@@ -1,0 +1,49 @@
+﻿/* cabextract - a program to extract Microsoft Cabinet files
+ * (C) 2000-2019 Stuart Caie <kyzer@cabextract.org.uk>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+/* cabextract uses libmspack to access cabinet files. libmspack is
+ * available from https://www.cabextract.org.uk/libmspack/
+ */
+
+using System.Collections.Generic;
+
+namespace LibMSPackSharp.CABExtract
+{
+    internal class _Arguments
+    {
+        public bool Help { get; set; }
+
+        public bool Lower { get; set; }
+
+        public bool Pipe { get; set; }
+
+        public bool View { get; set; }
+
+        public bool Quiet { get; set; }
+
+        public bool Single { get; set; }
+
+        public bool Fix { get; set; }
+
+        public bool Test { get; set; }
+
+        public string Directory { get; set; }
+
+        public List<string> Filters { get; set; }
+    }
+}

@@ -14,6 +14,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+using System;
+using System.IO;
+
 namespace LibMSPackSharp.CAB
 {
     /// <summary>
@@ -31,6 +34,8 @@ namespace LibMSPackSharp.CAB
         internal _FileHeader Header { get; set; }
 
         #endregion
+
+        #region Fields
 
         /// <summary>
         /// The next file in the cabinet or cabinet set, or NULL if this is the final file.
@@ -50,5 +55,43 @@ namespace LibMSPackSharp.CAB
         /// A pointer to the folder that contains this file.
         /// </summary>
         public Folder Folder { get; set; }
+
+        #endregion
+
+        #region Public Functionality
+
+        /// <summary>
+        /// Sets the last-modified time and file permissions on a file.
+        /// </summary>
+        /// <param name="filename">The name of the UNIX file whose last-modified time and file permissions will be set.</param>
+        public bool SetDateAndPerm(string filename)
+        {
+            DateTime tm = new DateTime(
+                Header.LastModifiedDateYear,
+                Header.LastModifiedDateMonth,
+                Header.LastModifiedDateDay,
+                Header.LastModifiedTimeHour,
+                Header.LastModifiedTimeMinute,
+                Header.LastModifiedTimeSecond);
+            
+            try
+            {
+                FileInfo fi = new FileInfo(filename);
+                fi.LastWriteTime = tm;
+
+                System.IO.FileAttributes fa = 0;
+                if (Header.Attributes.HasFlag(FileAttributes.MSCAB_ATTRIB_RDONLY))
+                    fa |= System.IO.FileAttributes.ReadOnly;
+
+                fi.Attributes = fa;
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }        }
+
+        #endregion
     }
 }

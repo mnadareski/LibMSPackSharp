@@ -53,7 +53,7 @@ namespace LibMSPackSharp.SZDD
         /// <see cref="Close(Header)"/>
         public Header Open(string filename)
         {
-            FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            Stream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             Header hdr = new Header();
             if (fh != null && hdr != null)
             {
@@ -115,7 +115,7 @@ namespace LibMSPackSharp.SZDD
             if (hdr == null)
                 return Error = Error.MSPACK_ERR_ARGS;
 
-            FileStream fh = hdr.FileHandle;
+            Stream fh = hdr.FileHandle;
             if (fh == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -125,7 +125,7 @@ namespace LibMSPackSharp.SZDD
                 return Error = Error.MSPACK_ERR_SEEK;
 
             // Open file for output
-            FileStream outfh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE);
+            Stream outfh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE);
             if (outfh == null)
                 return Error = Error.MSPACK_ERR_OPEN;
 
@@ -181,7 +181,7 @@ namespace LibMSPackSharp.SZDD
         /// <summary>
         /// Reads the headers of an SZDD format file
         /// </summary>
-        private Error ReadHeaders(FileStream fh, Header hdr)
+        private Error ReadHeaders(Stream fh, Header hdr)
         {
             // Read and check signature
             byte[] buf = new byte[8];

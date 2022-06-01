@@ -111,7 +111,7 @@ namespace LibMSPackSharp.Compression
         /// </param>
         /// <param name="is_delta">Should be zero for all regular LZX data, non-zero for LZX DELTA encoded data.</param>
         /// <returns>A pointer to an initialised LZX structure, or null if there was not enough memory or parameters to the function were wrong.</returns>
-        public static LZX Init(SystemImpl system, FileStream input, FileStream output, int window_bits, int reset_interval, int input_buffer_size, long output_length, bool is_delta)
+        public static LZX Init(SystemImpl system, Stream input, Stream output, int window_bits, int reset_interval, int input_buffer_size, long output_length, bool is_delta)
         {
             if (system == null)
                 return null;
@@ -187,7 +187,7 @@ namespace LibMSPackSharp.Compression
         /// <param name="input">An input file handle to read reference data using system.read().</param>
         /// <param name="length">The length of the reference data. Cannot be longer than the LZX window size.</param>
         /// <returns>An error code, or MSPACK_ERR_OK if successful</returns>
-        public Error SetReferenceData(SystemImpl system, FileStream input, uint length)
+        public Error SetReferenceData(SystemImpl system, Stream input, uint length)
         {
             if (!IsDelta)
             {

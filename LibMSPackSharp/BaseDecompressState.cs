@@ -26,11 +26,11 @@ namespace LibMSPackSharp
         /// <summary>
         /// Input file handle
         /// </summary>
-        public FileStream InputFileHandle { get; set; }
+        public Stream InputFileHandle { get; set; }
 
         /// <summary>
         /// Output file handle
         /// </summary>
-        public FileStream OutputFileHandle { get; set; }
+        public Stream OutputFileHandle { get; set; }
     }
 }

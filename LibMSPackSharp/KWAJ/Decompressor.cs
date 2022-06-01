@@ -53,7 +53,7 @@ namespace LibMSPackSharp.KWAJ
         /// <see cref="Close(Header)"/>
         public Header Open(string filename)
         {
-            FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            Stream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             if (fh == null)
             {
                 Error = Error.MSPACK_ERR_OPEN;
@@ -106,7 +106,7 @@ namespace LibMSPackSharp.KWAJ
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
         public Error Extract(Header hdr, string filename)
         {
-            FileStream fh = hdr?.FileHandle;
+            Stream fh = hdr?.FileHandle;
             if (fh == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -115,7 +115,7 @@ namespace LibMSPackSharp.KWAJ
                 return Error = Error.MSPACK_ERR_SEEK;
 
             // Open file for output
-            FileStream outfh;
+            Stream outfh;
             if ((outfh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
                 return Error = Error.MSPACK_ERR_OPEN;
 
@@ -214,7 +214,7 @@ namespace LibMSPackSharp.KWAJ
         /// <summary>
         /// Reads the headers of a KWAJ format file
         /// </summary>
-        private Error ReadHeaders(FileStream fh, Header hdr)
+        private Error ReadHeaders(Stream fh, Header hdr)
         {
             // Read in the header
             byte[] buf = new byte[16];

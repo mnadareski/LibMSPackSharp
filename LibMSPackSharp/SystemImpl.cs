@@ -16,6 +16,7 @@
 
 using System;
 using System.IO;
+using static LibMSPackSharp.Constants;
 
 namespace LibMSPackSharp
 {
@@ -50,14 +51,32 @@ namespace LibMSPackSharp
         /// </param>
         /// <param name="mode">One of the <see cref="OpenMode"/> values</param>
         /// <returns>
-        /// A pointer to a FileStream structure. This structure officially
+        /// A pointer to a Stream structure. This structure officially
         /// contains no members, its true contents are up to the
         /// SystemImpl implementor. It should contain whatever is needed
         /// for other SystemImpl methods to operate. Returning the null
         /// pointer indicates an error condition.
         /// </returns>
-        public FileStream Open(string filename, OpenMode mode)
+        public Stream Open(string filename, OpenMode mode)
         {
+            // Use of the STDOUT_FNAME pointer for a filename means the file should
+            // actually be extracted to stdout. Use of the TEST_FNAME pointer for a
+            // filename means the file should only be MD5-summed.
+            if (filename == STDOUT_FNAME || filename == TEST_FNAME)
+            {
+                // Only WRITE mode is valid for these special files
+                if (mode != OpenMode.MSPACK_SYS_OPEN_WRITE)
+                    return null;
+            }
+
+            // Standard out goes to the console
+            if (filename == STDOUT_FNAME)
+                return Console.OpenStandardOutput();
+
+            // Test has its own special stream type that hashes
+            else if (filename == TEST_FNAME)
+                return new TestStream();
+
             try
             {
                 switch (mode)
@@ -91,7 +110,15 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="file">the file to close</param>
         /// <see cref="Open(string, OpenMode)"/>
-        public void Close(FileStream file) => file?.Close();
+        public void Close(Stream file)
+        {
+            if (file == null)
+                return;
+
+            // We only want to close test and real files
+            if (file is TestStream || file is FileStream)
+                file.Close();
+        }
 
         /// <summary>
         /// Reads a given number of bytes from an open file.
@@ -108,7 +135,7 @@ namespace LibMSPackSharp
         /// </returns>
         /// <see cref="Open(string, OpenMode)"/>
         /// <see cref="Write"/>
-        public Func<FileStream, byte[], int, int, int> Read;
+        public Func<Stream, byte[], int, int, int> Read;
 
         /// <summary>
         /// Writes a given number of bytes to an open file.
@@ -125,7 +152,7 @@ namespace LibMSPackSharp
         /// </returns>
         /// <see cref="Open(string, OpenMode)"/>
         /// <see cref="Read"/>
-        public Func<FileStream, byte[], int, int, int> Write;
+        public Func<Stream, byte[], int, int, int> Write;
 
         /// <summary>
         /// Seeks to a specific file offset within an open file.
@@ -145,8 +172,8 @@ namespace LibMSPackSharp
         /// <param name="mode">One of the <see cref="SeekMode"/> values</param>
         /// <returns>zero for success, non-zero for an error</returns>
         /// <see cref="Open(string, OpenMode)"/>
-        /// <see cref="Tell(FileStream)"/>
-        public bool Seek(FileStream self, long offset, SeekMode mode)
+        /// <see cref="Tell(Stream)"/>
+        public bool Seek(Stream self, long offset, SeekMode mode)
         {
             if (self == null)
                 return false;
@@ -176,8 +203,8 @@ namespace LibMSPackSharp
         /// <param name="file">the file whose file position is wanted</param>
         /// <returns>the current file position of the file</returns>
         /// <see cref="Open(string, OpenMode)"/>
-        /// <see cref="Seek(FileStream, long, SeekMode)"/>
-        public long Tell(FileStream self) => self?.Position ?? 0;
+        /// <see cref="Seek(Stream, long, SeekMode)"/>
+        public long Tell(Stream self) => self?.Position ?? 0;
 
         /// <summary>
         /// Used to send messages from the library to the user.
@@ -193,10 +220,10 @@ namespace LibMSPackSharp
         /// </param>
         /// <param name="format">a printf() style format string. It does NOT include a trailing newline.</param>
         /// <see cref="Open(string, OpenMode)"/>
-        public void Message(FileStream file, string format)
+        public void Message(Stream file, string format)
         {
-            if (file != null)
-                Console.Error.Write($"{file.Name}: ");
+            if (file != null && file is FileStream fs)
+                Console.Error.Write($"{fs?.Name}: ");
 
             Console.Error.Write($"{format}\n");
         }
@@ -206,7 +233,7 @@ namespace LibMSPackSharp
         /// <summary>
         /// Returns the length of a file opened for reading
         /// </summary>
-        public Error GetFileLength(FileStream file, out long length)
+        public Error GetFileLength(Stream file, out long length)
         {
             try
             {
@@ -240,7 +267,7 @@ namespace LibMSPackSharp
 
         private static int DefaultRead(object file, byte[] buffer, int pointer, int bytes)
         {
-            FileStream self = file as FileStream;
+            Stream self = file as Stream;
             if (self != null && buffer != null && bytes >= 0)
             {
                 try { return self.Read(buffer, pointer, bytes); }
@@ -258,7 +285,7 @@ namespace LibMSPackSharp
                 return bytes;
             }
 
-            FileStream self = file as FileStream;
+            Stream self = file as Stream;
             if (self != null && buffer != null && bytes >= 0)
             {
                 try { self.Write(buffer, pointer, bytes); }

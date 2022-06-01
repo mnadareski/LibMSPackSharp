@@ -54,7 +54,7 @@ namespace LibMSPackSharp.OAB
             LZX lzx = null;
             Error ret = Error.MSPACK_ERR_OK;
 
-            FileStream infh = System.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
+            Stream infh = System.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
             if (infh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -80,7 +80,7 @@ namespace LibMSPackSharp.OAB
             uint block_max = BitConverter.ToUInt32(hdrbuf, oabhead_BlockMax);
             uint target_size = BitConverter.ToUInt32(hdrbuf, oabhead_TargetSize);
 
-            FileStream outfh = System.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
+            Stream outfh = System.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
             if (outfh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -240,7 +240,7 @@ namespace LibMSPackSharp.OAB
             uint window_size;
             Error ret = Error.MSPACK_ERR_OK;
 
-            FileStream infh = System.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
+            Stream infh = System.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
             if (infh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -270,7 +270,7 @@ namespace LibMSPackSharp.OAB
             if (block_max < patchblk_SIZEOF)
                 block_max = patchblk_SIZEOF;
 
-            FileStream basefh = System.Open(basePath, OpenMode.MSPACK_SYS_OPEN_READ);
+            Stream basefh = System.Open(basePath, OpenMode.MSPACK_SYS_OPEN_READ);
             if (basefh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -279,7 +279,7 @@ namespace LibMSPackSharp.OAB
                 return ret;
             }
 
-            FileStream outfh = System.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
+            Stream outfh = System.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
             if (outfh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -461,7 +461,7 @@ namespace LibMSPackSharp.OAB
 
                 return bytes_written;
             }
-            else if (baseFile is FileStream impl)
+            else if (baseFile is Stream impl)
             {
                 return SystemImpl.DefaultSystem.Write(impl, buf, pointer, size);
             }
@@ -477,7 +477,7 @@ namespace LibMSPackSharp.OAB
         /// <summary>
         /// Copy between the input and output, if possible
         /// </summary>
-        private Error CopyFileHandle(FileStream input, FileStream output, int bytesToCopy, byte[] buf, int bufferSize)
+        private Error CopyFileHandle(Stream input, Stream output, int bytesToCopy, byte[] buf, int bufferSize)
         {
             while (bytesToCopy > 0)
             {

@@ -44,6 +44,6 @@ namespace LibMSPackSharp.SZDD
         /// </summary>
         public char MissingChar { get; set; }
 
-        public FileStream FileHandle { get; set; }
+        public Stream FileHandle { get; set; }
     }
 }

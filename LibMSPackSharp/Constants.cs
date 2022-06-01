@@ -40,6 +40,28 @@ namespace LibMSPackSharp
 
         #endregion
 
+        #region CABExtract
+
+        public const string OPTSTRING = "d:e:fF:hlLpqstv";
+
+        /// <summary>
+        /// A special filename. Extracting to this filename will send the output
+        /// to standard output instead of a file on disk. The magic happens in
+        /// cabx_open() when the STDOUT_FNAME pointer is given as a filename, so
+        /// treat this like a constant rather than a string.
+        /// </summary>
+        public const string STDOUT_FNAME = "stdout";
+
+        /// <summary>
+        /// A special filename. Extracting to this filename will send the output
+        /// through an MD5 checksum calculator, instead of a file on disk. The
+        /// magic happens in cabx_open() when the TEST_FNAME pointer is given as a
+        /// filename, so treat this like a constant rather than a string. 
+        /// </summary>
+        public const string TEST_FNAME = "test";
+
+        #endregion
+
         #region CHM
 
         // Filenames of the system files used for decompression.

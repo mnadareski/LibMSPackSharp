@@ -63,6 +63,6 @@ namespace LibMSPackSharp.KWAJ
         /// <summary>
         /// Internal file handle
         /// </summary>
-        public FileStream FileHandle { get; set; }
+        public Stream FileHandle { get; set; }
     }
 }

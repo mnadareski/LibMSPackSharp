@@ -495,5 +495,53 @@ namespace LibMSPackSharp
         public static void DestroyOABDecompressor(OAB.Decompressor d) { }
 
         #endregion
+
+        #region Errors
+
+        /// <summary>
+        /// Returns a string with an error message appropriate for an error code
+        /// </summary>
+        /// <param name="error">The error code</param>
+        /// <returns>A constant string with an appropriate error message.</returns>
+        public static string ErrorToString(Error error)
+        {
+            switch (error)
+            {
+                #region MSPACK
+
+                case Error.MSPACK_ERR_OK:
+                    return "No error";
+                case Error.MSPACK_ERR_ARGS:
+                    return "Arguments error";
+                case Error.MSPACK_ERR_OPEN:
+                    return "File open error";
+                case Error.MSPACK_ERR_READ:
+                    return "File read error";
+                case Error.MSPACK_ERR_WRITE:
+                    return "File write error";
+                case Error.MSPACK_ERR_SEEK:
+                    return "File seek error";
+                case Error.MSPACK_ERR_NOMEMORY:
+                    return "Out of memory";
+                case Error.MSPACK_ERR_SIGNATURE:
+                    return "Bad signature";
+                case Error.MSPACK_ERR_DATAFORMAT:
+                    return "Error in data format";
+                case Error.MSPACK_ERR_CHECKSUM:
+                    return "Checksum error";
+                case Error.MSPACK_ERR_CRUNCH:
+                    return "Compression error";
+                case Error.MSPACK_ERR_DECRUNCH:
+                    return "Decompression error";
+
+                #endregion
+
+                // TODO: Include Inflate errors
+            }
+
+            return "Unknown error";
+        }
+
+        #endregion
     }
 }

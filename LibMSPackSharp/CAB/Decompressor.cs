@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using LibMSPackSharp.Compression;
@@ -67,7 +68,7 @@ namespace LibMSPackSharp.CAB
         /// <see cref="Error"/>
         public Cabinet Open(string filename)
         {
-            FileStream fileHandle = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            Stream fileHandle = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             if (fileHandle == null)
             {
                 Error = Error.MSPACK_ERR_OPEN;
@@ -178,7 +179,7 @@ namespace LibMSPackSharp.CAB
             byte[] searchBuffer = new byte[SearchBufferSize];
 
             // Attempt to open the file
-            FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            Stream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             if (fh == null)
             {
                 Error = Error.MSPACK_ERR_OPEN;
@@ -845,7 +846,7 @@ namespace LibMSPackSharp.CAB
         /// The inner loop of <see cref="Search(Decompressor, string)"/>, to make it easier to
         /// break out of the loop and be sure that all resources are freed
         /// </summary>
-        private Error Find(byte[] buf, FileStream fh, string filename, long flen, ref long firstlen, out Cabinet firstcab)
+        private Error Find(byte[] buf, Stream fh, string filename, long flen, ref long firstlen, out Cabinet firstcab)
         {
             firstcab = null;
             Cabinet cab, link = null;
@@ -1186,7 +1187,7 @@ namespace LibMSPackSharp.CAB
         /// Fills out a pre-existing Cabinet structure, allocates memory
         /// for folders and files as necessary
         /// </summary>
-        private Error ReadHeaders(FileStream fh, Cabinet cab, long offset, bool salvage, bool quiet)
+        private Error ReadHeaders(Stream fh, Cabinet cab, long offset, bool salvage, bool quiet)
         {
             Error err = Error.MSPACK_ERR_OK;
             Folder linkfol = null;
@@ -1302,7 +1303,7 @@ namespace LibMSPackSharp.CAB
         /// <summary>
         /// Read and process a single file
         /// </summary>
-        private Error ReadSingleFile(FileStream fh, Cabinet cab, bool salvage, ref InternalFile linkfile)
+        private Error ReadSingleFile(Stream fh, Cabinet cab, bool salvage, ref InternalFile linkfile)
         {
             // Read in the FIHEADER
             byte[] buf = new byte[64];
@@ -1397,7 +1398,7 @@ namespace LibMSPackSharp.CAB
         /// <summary>
         /// Read and process a single folder
         /// </summary>
-        private Error ReadSingleFolder(FileStream fh, Cabinet cab, long offset, ref Folder linkfol)
+        private Error ReadSingleFolder(Stream fh, Cabinet cab, long offset, ref Folder linkfol)
         {
             // Read in the FOHEADER
             byte[] buf = new byte[64];
@@ -1434,6 +1435,52 @@ namespace LibMSPackSharp.CAB
                 Offset = offset + fol.Header.DataOffset,
             };
 
+            // Get and process the block data
+            if (fol.Header.DataOffset < fh.Length)
+            {
+                long currentPosition = fh.Position;
+
+                fol.DataBlocks = new List<_DataBlockHeader>();
+                fh.Seek(fol.Header.DataOffset, SeekOrigin.Begin);
+                for (int j = 0; j < fol.Header.NumBlocks; j++)
+                {
+                    // Read the block header
+                    byte[] hdr = new byte[_DataBlockHeader.Size];
+                    if (SystemImpl.DefaultSystem.Read(fh, hdr, 0, _DataBlockHeader.Size) != _DataBlockHeader.Size)
+                    {
+                        fh.Seek(currentPosition, SeekOrigin.Begin);
+                        break;
+                    }
+
+                    // Skip any reserved block headers
+                    if (cab.Header.DataReserved != 0 && !System.Seek(fh, cab.Header.DataReserved, SeekMode.MSPACK_SYS_SEEK_CUR))
+                    {
+                        fh.Seek(currentPosition, SeekOrigin.Begin);
+                        break;
+                    }
+
+                    // Create a block header from the data
+                    err = _DataBlockHeader.Create(hdr, out _DataBlockHeader dataBlockHeader);
+                    if (err != Error.MSPACK_ERR_OK)
+                    {
+                        fh.Seek(currentPosition, SeekOrigin.Begin);
+                        break;
+                    }
+
+                    // Add the data block header to the list
+                    fol.DataBlocks.Add(dataBlockHeader);
+
+                    // Attempt to seek forward to the next offset
+                    if (System.Seek(fh, dataBlockHeader.CompressedSize, SeekMode.MSPACK_SYS_SEEK_CUR))
+                    {
+                        fh.Seek(currentPosition, SeekOrigin.Begin);
+                        break;
+                    }
+                }
+
+                fh.Seek(currentPosition, SeekOrigin.Begin);
+            }
+
             // Link folder into list of folders
             if (linkfol == null)
                 cab.Folders = fol;
@@ -1448,7 +1495,7 @@ namespace LibMSPackSharp.CAB
         /// <summary>
         /// Read a possibly empty string from the input
         /// </summary>
-        private string ReadString(FileStream fh, bool permitEmpty, ref Error error)
+        private string ReadString(Stream fh, bool permitEmpty, ref Error error)
         {
             long position = System.Tell(fh);
             byte[] buf = new byte[256];

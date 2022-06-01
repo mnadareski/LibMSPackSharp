@@ -22,7 +22,7 @@ namespace LibMSPackSharp.OAB
     {
         public SystemImpl OrigSys { get; set; }
 
-        public FileStream OrigFile { get; set; }
+        public Stream OrigFile { get; set; }
 
         public uint CRC { get; set; }
 

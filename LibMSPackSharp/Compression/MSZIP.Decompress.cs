@@ -31,7 +31,7 @@ namespace LibMSPackSharp.Compression
         ///   and 'holes' left will be filled with zero bytes. This allows at least
         ///   a partial recovery of erroneous data.
         /// </summary>
-        public static MSZIP Init(SystemImpl system, FileStream input, FileStream output, int input_buffer_size, bool repair_mode)
+        public static MSZIP Init(SystemImpl system, Stream input, Stream output, int input_buffer_size, bool repair_mode)
         {
             if (system == null)
                 return null;

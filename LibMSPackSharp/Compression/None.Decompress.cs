@@ -13,7 +13,7 @@ namespace LibMSPackSharp.Compression
 {
     public partial class None
     {
-        public static None Init(SystemImpl sys, FileStream input, FileStream output, int bufsize)
+        public static None Init(SystemImpl sys, Stream input, Stream output, int bufsize)
         {
             return new None()
             {

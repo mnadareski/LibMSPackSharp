@@ -14,6 +14,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+using System.Collections.Generic;
+
 namespace LibMSPackSharp.CAB
 {
     /// <summary>
@@ -33,6 +35,11 @@ namespace LibMSPackSharp.CAB
         /// Folder header information
         /// </summary>
         internal _FolderHeader Header { get; set; }
+
+        /// <summary>
+        /// Block data information
+        /// </summary>
+        internal List<_DataBlockHeader> DataBlocks { get; set; }
 
         #endregion
 
