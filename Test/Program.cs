@@ -53,7 +53,10 @@ namespace Test
 
                 CABInfo.GetInfo(found);
 
-                CABExtract.Extract(paths: new List<string> { file });
+                List<string> paths = new List<string> { file };
+                string directory = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file));
+
+                CABExtract.Extract(paths, directory: directory);
             }
             catch (Exception ex)
             {

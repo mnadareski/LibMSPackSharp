@@ -458,7 +458,7 @@ namespace LibMSPackSharp.CABExtract
                 for (file = cab.Files; file != null; file = file.Next)
                 {
                     // Create the full UNIX output filename
-                    if ((name = CreateOutputName(file.Filename, Arguments.Directory, Arguments.Lower)) != null)
+                    if ((name = CreateOutputName(file?.Filename?.TrimEnd('\0'), Arguments.Directory, Arguments.Lower)) == null)
                     {
                         errors++;
                         continue;
@@ -519,7 +519,7 @@ namespace LibMSPackSharp.CABExtract
                             // Extracting to stdout
                             if (CABDecompressor.Extract(file, STDOUT_FNAME) != Error.MSPACK_ERR_OK)
                             {
-                                Console.Error.WriteLine("%s(%s): %s\n", STDOUT_FNAME, name, Library.ErrorToString(CABDecompressor.Error));
+                                Console.Error.WriteLine($"{STDOUT_FNAME}({name}): {Library.ErrorToString(CABDecompressor.Error)}");
                                 errors++;
                             }
                         }
@@ -527,18 +527,18 @@ namespace LibMSPackSharp.CABExtract
                         {
                             // Extracting to a regular file
                             if (!Arguments.Quiet)
-                                Console.WriteLine("  extracting %s\n", name);
+                                Console.WriteLine($"  extracting {name}");
 
                             if (!EnsureFilepath(name))
                             {
-                                Console.Error.WriteLine("%s: can't create file path\n", name);
+                                Console.Error.WriteLine($"{name}: can't create file path");
                                 errors++;
                             }
                             else
                             {
                                 if (CABDecompressor.Extract(file, name) != Error.MSPACK_ERR_OK)
                                 {
-                                    Console.Error.WriteLine("%s: %s\n", name, Library.ErrorToString(CABDecompressor.Error));
+                                    Console.Error.WriteLine($"{name}: {Library.ErrorToString(CABDecompressor.Error)}");
                                     errors++;
                                 }
                                 else
@@ -653,13 +653,19 @@ namespace LibMSPackSharp.CABExtract
         /// <returns>A freshly allocated and created filename</returns>
         private static string CreateOutputName(string fname, string dir, bool lower)
         {
+            if (string.IsNullOrWhiteSpace(fname))
+                return null;
+
             if (lower)
             {
                 fname = fname.ToLowerInvariant();
                 dir = dir.ToLowerInvariant();
             }
 
-            return Path.Combine(dir, fname);
+            if (string.IsNullOrWhiteSpace(dir))
+                return fname;
+            else
+                return Path.Combine(dir, fname);
         }
 
         #region Support Functions
@@ -713,7 +719,7 @@ namespace LibMSPackSharp.CABExtract
         /// </summary>
         /// <param name="fml">fml address of the list to free</param>
         /// <see cref="MemorizeFile(List{_FileMem}, string, string)"/>
-        private static void ForgetFiles(List<_FileMem> fml) => fml.Clear();
+        private static void ForgetFiles(List<_FileMem> fml) => fml?.Clear();
 
         /// <summary>
         /// Adds a filter to args.filters
@@ -741,7 +747,7 @@ namespace LibMSPackSharp.CABExtract
             try
             {
                 string dir = Path.GetDirectoryName(path);
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(dir);
                 return true;
             }
             catch

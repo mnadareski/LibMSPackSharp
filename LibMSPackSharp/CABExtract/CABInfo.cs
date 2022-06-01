@@ -144,7 +144,7 @@ namespace LibMSPackSharp.CABExtract
                 }
 
                 Console.WriteLine($"- file {i:5} @{cabinet.BaseOffset}"); // TODO: Get actual offset of file header
-                Console.WriteLine($"    name   = {file.Filename}{(file.Header.Attributes.HasFlag(FileAttributes.MSCAB_ATTRIB_UTF_NAME) ? " (UTF-8)" : "")}");
+                Console.WriteLine($"    name   = {file.Filename.TrimEnd('\0')}{(file.Header.Attributes.HasFlag(FileAttributes.MSCAB_ATTRIB_UTF_NAME) ? " (UTF-8)" : "")}");
                 Console.WriteLine($"    folder = 0x{file.Folder.Data.Offset:x4} [{folder_type}]");
                 Console.WriteLine($"    length = {file.Header.UncompressedSize} bytes");
                 Console.WriteLine($"    offset = {file.Header.FolderOffset} bytes");

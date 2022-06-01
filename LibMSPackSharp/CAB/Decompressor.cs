@@ -306,7 +306,7 @@ namespace LibMSPackSharp.CAB
             // Extraction impossible if no folder, or folder needs predecessor
             if (file.Folder == null || file.Folder.MergePrev != null)
             {
-                System.Message(null, $"ERROR; file \"{file.Filename}\" cannot be extracted, cabinet set is incomplete");
+                System.Message(null, $"ERROR; file \"{file.Filename.TrimEnd('\0')}\" cannot be extracted, cabinet set is incomplete");
                 return Error = Error.MSPACK_ERR_DECRUNCH;
             }
 
@@ -317,7 +317,7 @@ namespace LibMSPackSharp.CAB
                 long maxlen = file.Folder.Header.NumBlocks * CAB_BLOCKMAX;
                 if ((file.Header.FolderOffset + filelen) > maxlen)
                 {
-                    System.Message(null, $"ERROR; file \"{file.Filename}\" cannot be extracted, cabinet set is incomplete");
+                    System.Message(null, $"ERROR; file \"{file.Filename.TrimEnd('\0')}\" cannot be extracted, cabinet set is incomplete");
                     return Error = Error.MSPACK_ERR_DECRUNCH;
                 }
             }
@@ -836,7 +836,7 @@ namespace LibMSPackSharp.CAB
                 if (r != null)
                     matching = true;
                 else
-                    System.Message(null, $"WARNING; merged file {l.Filename} not listed in both cabinets");
+                    System.Message(null, $"WARNING; merged file {l.Filename.TrimEnd('\0')} not listed in both cabinets");
             }
 
             return matching;
