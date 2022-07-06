@@ -11,6 +11,7 @@ using System;
 
 namespace LibMSPackSharp.CAB
 {
+    // CFHEADER
     internal class _CabinetHeader
     {
         #region Normal Header
@@ -22,73 +23,76 @@ namespace LibMSPackSharp.CAB
         public uint Signature { get; private set; }
 
         /// <summary>
-        /// UNKNOWN
+        /// Reserved field; MUST be set to 0 (zero).
         /// </summary>
         /// <remarks>0x04</remarks>
-        public uint Reserved0 { get; private set; }
-
-        /// <summary>
-        /// The length of the cabinet file in bytes.
-        /// </summary>
-        /// <remarks>0x08</remarks>
-        public uint CabinetSize { get; private set; }
-
-        /// <summary>
-        /// UNKNOWN
-        /// </summary>
-        /// <remarks>0x0C</remarks>
         public uint Reserved1 { get; private set; }
 
         /// <summary>
-        /// UNKNOWN
+        /// Specifies the total size of the cabinet file, in bytes.
+        /// </summary>
+        /// <remarks>0x08</remarks>
+        public int CabinetSize { get; private set; }
+
+        /// <summary>
+        /// Reserved field; MUST be set to 0 (zero).
+        /// </summary>
+        /// <remarks>0x0C</remarks>
+        public uint Reserved2 { get; private set; }
+
+        /// <summary>
+        /// Specifies the absolute file offset, in bytes, of the first CFFILE field entry
         /// </summary>
         /// <remarks>0x10</remarks>
         public uint FileOffset { get; private set; }
 
         /// <summary>
-        /// UNKNOWN
+        /// Reserved field; MUST be set to 0 (zero).
         /// </summary>
         /// <remarks>0x14</remarks>
-        public uint Reserved2 { get; private set; }
+        public uint Reserved3 { get; private set; }
 
         /// <summary>
-        /// Minor cabinet version
+        /// Specifies the minor cabinet file format version. This value MUST be set to 3 (three).
         /// </summary>
         /// <remarks>0x18</remarks>
         public byte MinorVersion { get; private set; }
 
         /// <summary>
-        /// Major cabinet version
+        /// Specifies the major cabinet file format version. This value MUST be set to 1 (one).
         /// </summary>
         /// <remarks>0x19</remarks>
         public byte MajorVersion { get; private set; }
 
         /// <summary>
-        /// Number of internal folders
+        /// Specifies the number of CFFOLDER field entries in this cabinet file.
         /// </summary>
         /// <remarks>0x1A</remarks>
-        public ushort NumFolders { get; private set; }
+        public short NumFolders { get; private set; }
 
         /// <summary>
-        /// Number of internal files
+        /// Specifies the number of CFFILE field entries in this cabinet file.
         /// </summary>
         /// <remarks>0x1C</remarks>
-        public ushort NumFiles { get; private set; }
+        public short NumFiles { get; private set; }
 
         /// <summary>
-        /// Header flags.
+        /// Specifies bit-mapped values that indicate the presence of optional data.
         /// </summary>
         /// <remarks>0x1E</remarks>
-        /// <see cref="Cabinet.PreviousName"/>
-        /// <see cref="Cabinet.PreviousInfo"/>
-        /// <see cref="Cabinet.NextName"/>
-        /// <see cref="Cabinet.NextInfo"/>
+        /// <see cref="Cabinet.PreviousCabinetName"/>
+        /// <see cref="Cabinet.PreviousDiskName"/>
+        /// <see cref="Cabinet.NextCabinetName"/>
+        /// <see cref="Cabinet.NextDiskName"/>
         /// <see cref="Cabinet.HeaderResv"/>
         public HeaderFlags Flags { get; private set; }
 
         /// <summary>
-        /// The set ID of the cabinet. All cabinets in the same set should have
-        /// the same set ID.
+        /// Specifies an arbitrarily derived (random) value that binds a collection of linked cabinet files
+        /// together.All cabinet files in a set will contain the same setID field value.This field is used by
+        /// cabinet file extractors to ensure that cabinet files are not inadvertently mixed.This value has no
+        /// meaning in a cabinet file that is not in a set.
+
         /// </summary>
         /// <remarks>0x20</remarks>
         public ushort SetID { get; private set; }
@@ -161,21 +165,21 @@ namespace LibMSPackSharp.CAB
             if (header.Signature != 0x4643534D)
                 return Error.MSPACK_ERR_SIGNATURE;
 
-            header.Reserved0 = BitConverter.ToUInt32(buffer, 0x04);
-            header.CabinetSize = BitConverter.ToUInt32(buffer, 0x08);
-            header.Reserved1 = BitConverter.ToUInt32(buffer, 0x0C);
+            header.Reserved1 = BitConverter.ToUInt32(buffer, 0x04);
+            header.CabinetSize = BitConverter.ToInt32(buffer, 0x08);
+            header.Reserved2 = BitConverter.ToUInt32(buffer, 0x0C);
             header.FileOffset = BitConverter.ToUInt32(buffer, 0x10);
-            header.Reserved2 = BitConverter.ToUInt32(buffer, 0x14);
+            header.Reserved3 = BitConverter.ToUInt32(buffer, 0x14);
 
             // Expect version 1.3, but don't validate
             header.MinorVersion = buffer[0x18];
             header.MajorVersion = buffer[0x19];
 
-            header.NumFolders = BitConverter.ToUInt16(buffer, 0x1A);
+            header.NumFolders = BitConverter.ToInt16(buffer, 0x1A);
             if (header.NumFolders == 0)
                 return Error.MSPACK_ERR_DATAFORMAT;
 
-            header.NumFiles = BitConverter.ToUInt16(buffer, 0x1C);
+            header.NumFiles = BitConverter.ToInt16(buffer, 0x1C);
             if (header.NumFiles == 0)
                 return Error.MSPACK_ERR_DATAFORMAT;
 

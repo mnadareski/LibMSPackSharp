@@ -112,25 +112,27 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         public Cabinet NextCabinet { get; set; }
 
+        // The following 4 fields should be part of the internal header
+
         /// <summary>
         /// The filename of the previous cabinet in a cabinet set, or NULL.
         /// </summary>
-        public string PreviousName { get; set; }
-
-        /// <summary>
-        /// The filename of the next cabinet in a cabinet set, or NULL.
-        /// </summary>
-        public string NextName { get; set; }
+        public string PreviousCabinetName { get; set; }
 
         /// <summary>
         /// The name of the disk containing the previous cabinet in a cabinet, or NULL.
         /// </summary>
-        public string PreviousInfo { get; set; }
+        public string PreviousDiskName { get; set; }
+
+        /// <summary>
+        /// The filename of the next cabinet in a cabinet set, or NULL.
+        /// </summary>
+        public string NextCabinetName { get; set; }
 
         /// <summary>
         /// The name of the disk containing the next cabinet in a cabinet set, or NULL.
         /// </summary>
-        public string NextInfo { get; set; }
+        public string NextDiskName { get; set; }
 
         /// <summary>
         /// A list of all files in the cabinet or cabinet set.

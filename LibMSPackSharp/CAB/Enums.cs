@@ -14,12 +14,12 @@ namespace LibMSPackSharp.CAB
     [Flags]
     public enum CompressionType : ushort
     {
-        COMPTYPE_MASK = 0x000f,
+        COMPTYPE_MASK       = 0x000F,
 
-        COMPTYPE_NONE = 0x0000,
-        COMPTYPE_MSZIP = 0x0001,
-        COMPTYPE_QUANTUM = 0x0002,
-        COMPTYPE_LZX = 0x0003,
+        COMPTYPE_NONE       = 0x0000,
+        COMPTYPE_MSZIP      = 0x0001,
+        COMPTYPE_QUANTUM    = 0x0002,
+        COMPTYPE_LZX        = 0x0003,
     }
 
     [Flags]
@@ -41,12 +41,12 @@ namespace LibMSPackSharp.CAB
         MSCAB_ATTRIB_SYSTEM = 0x04,
 
         /// <summary>
-        /// Indicates the file is "archived".
+        /// File has been modified since last backup.
         /// </summary>
         MSCAB_ATTRIB_ARCH = 0x20,
 
         /// <summary>
-        /// Indicates the file is an executable program.
+        /// File will be run after extraction.
         /// </summary>
         MSCAB_ATTRIB_EXEC = 0x40,
 
@@ -59,8 +59,8 @@ namespace LibMSPackSharp.CAB
     [Flags]
     public enum FileFlags : ushort
     {
-        CONTINUED_FROM_PREV = 0xFFFD,
-        CONTINUED_TO_NEXT = 0xFFFE,
+        CONTINUED_FROM_PREV     = 0xFFFD,
+        CONTINUED_TO_NEXT       = 0xFFFE,
         CONTINUED_PREV_AND_NEXT = 0xFFFF,
     }
 

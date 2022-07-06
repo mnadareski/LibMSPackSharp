@@ -570,9 +570,9 @@ namespace LibMSPackSharp.CABExtract
             // Load any spanning cabinets -- backwards
             for (cab = basecab; cab.Header.Flags.HasFlag(HeaderFlags.MSCAB_HDR_PREVCAB); cab = cab.PreviousCabinet)
             {
-                if ((name = FindCabinetFile(basename, cab.PreviousName)) == null)
+                if ((name = FindCabinetFile(basename, cab.PreviousCabinetName)) == null)
                 {
-                    Console.Error.WriteLine($"{basename}: can't find {cab.PreviousName}");
+                    Console.Error.WriteLine($"{basename}: can't find {cab.PreviousCabinetName}");
                     break;
                 }
 
@@ -581,11 +581,11 @@ namespace LibMSPackSharp.CABExtract
                     break;
 
                 if (!Arguments.Quiet)
-                    Console.WriteLine($"{basename}: extends backwards to {cab.PreviousName} ({cab.PreviousInfo})");
+                    Console.WriteLine($"{basename}: extends backwards to {cab.PreviousCabinetName} ({cab.PreviousDiskName})");
 
                 if ((cab2 = CABDecompressor.Open(name)) == null || CABDecompressor.Prepend(cab, cab2) != Error.MSPACK_ERR_OK)
                 {
-                    Console.Error.WriteLine($"{basename}: can't prepend {cab.PreviousName}: {Library.ErrorToString(CABDecompressor.Error)}");
+                    Console.Error.WriteLine($"{basename}: can't prepend {cab.PreviousCabinetName}: {Library.ErrorToString(CABDecompressor.Error)}");
                     if (cab2 != null)
                         CABDecompressor.Close(cab2);
 
@@ -598,9 +598,9 @@ namespace LibMSPackSharp.CABExtract
             // Load any spanning cabinets -- forwards
             for (cab = basecab; cab.Header.Flags.HasFlag(HeaderFlags.MSCAB_HDR_NEXTCAB); cab = cab.NextCabinet)
             {
-                if ((name = FindCabinetFile(basename, cab.NextName)) == null)
+                if ((name = FindCabinetFile(basename, cab.NextCabinetName)) == null)
                 {
-                    Console.Error.WriteLine($"{basename}: can't find {cab.NextName}");
+                    Console.Error.WriteLine($"{basename}: can't find {cab.NextCabinetName}");
                     break;
                 }
 
@@ -609,11 +609,11 @@ namespace LibMSPackSharp.CABExtract
                     break;
 
                 if (!Arguments.Quiet)
-                    Console.WriteLine($"{basename}: extends to {cab.NextName} ({cab.NextInfo})");
+                    Console.WriteLine($"{basename}: extends to {cab.NextCabinetName} ({cab.NextDiskName})");
 
                 if ((cab2 = CABDecompressor.Open(name)) == null || CABDecompressor.Append(cab, cab2) != Error.MSPACK_ERR_OK)
                 {
-                    Console.Error.WriteLine($"{basename}: can't append {cab.NextName}: {Library.ErrorToString(CABDecompressor.Error)}");
+                    Console.Error.WriteLine($"{basename}: can't append {cab.NextCabinetName}: {Library.ErrorToString(CABDecompressor.Error)}");
                     if (cab2 != null)
                         CABDecompressor.Close(cab2);
 

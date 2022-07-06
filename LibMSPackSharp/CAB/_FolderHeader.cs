@@ -19,7 +19,7 @@ namespace LibMSPackSharp.CAB
         /// Cabinet offset of first datablock
         /// </summary>
         /// <remarks>0x00</remarks>
-        public uint DataOffset { get; internal set; }
+        public int DataOffset { get; internal set; }
 
         /// <summary>
         /// The total number of data blocks used by this folder. This includes
@@ -27,7 +27,7 @@ namespace LibMSPackSharp.CAB
         /// one cabinet.
         /// </summary>
         /// <remarks>0x04</remarks>
-        public ushort NumBlocks { get; internal set; }
+        public short NumBlocks { get; internal set; }
 
         /// <summary>
         /// The compression format used by this folder.
@@ -62,8 +62,8 @@ namespace LibMSPackSharp.CAB
 
             header = new _FolderHeader();
 
-            header.DataOffset = BitConverter.ToUInt32(buffer, 0x00);
-            header.NumBlocks = BitConverter.ToUInt16(buffer, 0x04);
+            header.DataOffset = BitConverter.ToInt32(buffer, 0x00);
+            header.NumBlocks = BitConverter.ToInt16(buffer, 0x04);
             header.CompType = (CompressionType)BitConverter.ToUInt16(buffer, 0x06);
 
             return Error.MSPACK_ERR_OK;

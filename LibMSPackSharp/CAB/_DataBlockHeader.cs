@@ -25,13 +25,13 @@ namespace LibMSPackSharp.CAB
         /// Compressed size of the data block
         /// </summary>
         /// <remarks>0x04</remarks>
-        public ushort CompressedSize { get; private set; }
+        public short CompressedSize { get; private set; }
 
         /// <summary>
         /// Uncompressed size of the data block
         /// </summary>
         /// <remarks>0x06</remarks>
-        public ushort UncompressedSize { get; private set; }
+        public short UncompressedSize { get; private set; }
 
         /// <summary>
         /// Size of the Data Block header in bytes
@@ -57,8 +57,8 @@ namespace LibMSPackSharp.CAB
             header = new _DataBlockHeader();
 
             header.CheckSum = BitConverter.ToUInt32(buffer, 0x00);
-            header.CompressedSize = BitConverter.ToUInt16(buffer, 0x04);
-            header.UncompressedSize = BitConverter.ToUInt16(buffer, 0x06);
+            header.CompressedSize = BitConverter.ToInt16(buffer, 0x04);
+            header.UncompressedSize = BitConverter.ToInt16(buffer, 0x06);
 
             return Error.MSPACK_ERR_OK;
         }

@@ -1125,7 +1125,7 @@ namespace LibMSPackSharp.CAB
                 // NOTE: special case, don't merge if rfol is merge prev and next,
                 // rfol.MergeNext is going to be deleted, so keep lfol's version
                 // instead
-                lfol.Header.NumBlocks += (ushort)(rfol.Header.NumBlocks - 1);
+                lfol.Header.NumBlocks += (short)(rfol.Header.NumBlocks - 1);
                 if ((rfol.MergeNext == null) || (rfol.MergeNext.Folder != rfol))
                     lfol.MergeNext = rfol.MergeNext;
 
@@ -1203,8 +1203,8 @@ namespace LibMSPackSharp.CAB
             cab.Files = null;
             cab.Folders = null;
             cab.PreviousCabinet = cab.NextCabinet = null;
-            cab.PreviousName = cab.NextName = null;
-            cab.PreviousInfo = cab.NextInfo = null;
+            cab.PreviousCabinetName = cab.NextCabinetName = null;
+            cab.PreviousDiskName = cab.NextDiskName = null;
 
             cab.BaseOffset = offset;
 
@@ -1248,11 +1248,11 @@ namespace LibMSPackSharp.CAB
             // Read name and info of preceeding cabinet in set, if present
             if (cab.Header.Flags.HasFlag(HeaderFlags.MSCAB_HDR_PREVCAB))
             {
-                cab.PreviousName = ReadString(fh, false, ref err);
+                cab.PreviousCabinetName = ReadString(fh, false, ref err);
                 if (err != Error.MSPACK_ERR_OK)
                     return Error = err;
 
-                cab.PreviousInfo = ReadString(fh, true, ref err);
+                cab.PreviousDiskName = ReadString(fh, true, ref err);
                 if (err != Error.MSPACK_ERR_OK)
                     return Error = err;
             }
@@ -1260,11 +1260,11 @@ namespace LibMSPackSharp.CAB
             // Read name and info of next cabinet in set, if present
             if (cab.Header.Flags.HasFlag(HeaderFlags.MSCAB_HDR_NEXTCAB))
             {
-                cab.NextName = ReadString(fh, false, ref err);
+                cab.NextCabinetName = ReadString(fh, false, ref err);
                 if (err != Error.MSPACK_ERR_OK)
                     return Error = err;
 
-                cab.NextInfo = ReadString(fh, true, ref err);
+                cab.NextDiskName = ReadString(fh, true, ref err);
                 if (err != Error.MSPACK_ERR_OK)
                     return Error = err;
             }

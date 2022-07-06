@@ -16,13 +16,15 @@ namespace LibMSPackSharp.CAB
         #region Fields
 
         /// <summary>
-        /// The uncompressed length of the file, in bytes.
+        /// Specifies the uncompressed size of this file, in bytes.
         /// </summary>
         /// <remarks>0x00</remarks>
         public uint UncompressedSize { get; private set; }
 
         /// <summary>
-        /// The uncompressed offset of this file in its folder.
+        /// Specifies the uncompressed offset, in bytes, of the start of this file's data. For the
+        /// first file in each folder, this value will usually be zero.Subsequent files in the folder will have offsets
+        /// that are typically the running sum of the <see cref="UncompressedSize"/> field values.
         /// </summary>
         /// <remarks>0x04</remarks>
         public uint FolderOffset { get; private set; }
@@ -70,7 +72,7 @@ namespace LibMSPackSharp.CAB
         public byte LastModifiedTimeSecond { get; set; }
 
         /// <summary>
-        /// File attributes.
+        /// Attributes of this file; can be used in any combination.
         /// </summary>
         /// <remarks>0x0E</remarks>
         public FileAttributes Attributes { get; set; }

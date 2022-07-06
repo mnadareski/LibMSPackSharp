@@ -55,14 +55,14 @@ namespace LibMSPackSharp.CABExtract
 
             if (cabinet.Header.Flags.HasFlag(HeaderFlags.MSCAB_HDR_PREVCAB))
             {
-                Console.WriteLine($"- prev cabinet   = {cabinet.PreviousName}");
-                Console.WriteLine($"- prev disk      = {cabinet.PreviousInfo}");
+                Console.WriteLine($"- prev cabinet   = {cabinet.PreviousCabinetName}");
+                Console.WriteLine($"- prev disk      = {cabinet.PreviousDiskName}");
             }
 
             if (cabinet.Header.Flags.HasFlag(HeaderFlags.MSCAB_HDR_NEXTCAB))
             {
-                Console.WriteLine($"- next cabinet   = {cabinet.NextName}");
-                Console.WriteLine($"- next disk      = {cabinet.NextInfo}");
+                Console.WriteLine($"- next cabinet   = {cabinet.NextCabinetName}");
+                Console.WriteLine($"- next disk      = {cabinet.NextDiskName}");
             }
 
             Console.WriteLine();
@@ -96,10 +96,10 @@ namespace LibMSPackSharp.CABExtract
                         break;
                 }
 
-                Console.WriteLine($"- Folder 0x{i:x4} @{folder.Data.Offset}:");
+                Console.WriteLine($"- Folder 0x{i:X4} @{folder.Data.Offset}:");
                 Console.WriteLine($"    Data Blocks - {folder.Header.NumBlocks}");
                 Console.WriteLine($"    Data Offset - {folder.Header.DataOffset}");
-                Console.WriteLine($"    Compression - {compression} ({folder.Header.CompType:x})");
+                Console.WriteLine($"    Compression - {compression} ({folder.Header.CompType:X})");
 
                 if (folder.DataBlocks != null)
                 {
@@ -107,7 +107,7 @@ namespace LibMSPackSharp.CABExtract
                     {
                         _DataBlockHeader dataBlockHeader = folder.DataBlocks[j];
                         Console.WriteLine($"    - Data Block {j}");
-                        Console.WriteLine($"        Checksum          - {dataBlockHeader.CheckSum:x8}");
+                        Console.WriteLine($"        Checksum          - {dataBlockHeader.CheckSum:X8}");
                         Console.WriteLine($"        Compressed Size   - {dataBlockHeader.CompressedSize}");
                         Console.WriteLine($"        Uncompressed Size - {dataBlockHeader.UncompressedSize}");
                     }
@@ -145,7 +145,7 @@ namespace LibMSPackSharp.CABExtract
 
                 Console.WriteLine($"- file {i:5} @{cabinet.BaseOffset}"); // TODO: Get actual offset of file header
                 Console.WriteLine($"    name   = {file.Filename.TrimEnd('\0')}{(file.Header.Attributes.HasFlag(FileAttributes.MSCAB_ATTRIB_UTF_NAME) ? " (UTF-8)" : "")}");
-                Console.WriteLine($"    folder = 0x{file.Folder.Data.Offset:x4} [{folder_type}]");
+                Console.WriteLine($"    folder = 0x{file.Folder.Data.Offset:X4} [{folder_type}]");
                 Console.WriteLine($"    length = {file.Header.UncompressedSize} bytes");
                 Console.WriteLine($"    offset = {file.Header.FolderOffset} bytes");
                 Console.WriteLine($"    date   = {file.Header.LastModifiedDateYear:4}/{file.Header.LastModifiedDateMonth:2}/{file.Header.LastModifiedDateDay:2}"
