@@ -693,7 +693,7 @@ namespace LibMSPackSharp.CAB
                 // Perform checksum test on the block (if one is stored)
                 if (dataBlockHeader.CheckSum > 0)
                 {
-                    uint sum2 = Checksum(State.Input, State.InputEnd, dataBlockHeader.CompressedSize, 0);
+                    uint sum2 = Checksum(State.Input, State.InputEnd, (uint)dataBlockHeader.CompressedSize, 0);
                     if (Checksum(hdr, 4, 4, sum2) != dataBlockHeader.CheckSum)
                     {
                         if (!ignore_cksum)
