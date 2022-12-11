@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <Title>LibMSPackSharp</Title>
     <AssemblyName>LibMSPackSharp</AssemblyName>
     <Description>Port of libmspack to C#, with additions</Description>
