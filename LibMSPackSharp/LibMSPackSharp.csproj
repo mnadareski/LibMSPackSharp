@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>net48;net6.0</TargetFrameworks>
-    <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <Title>LibMSPackSharp</Title>
     <AssemblyName>LibMSPackSharp</AssemblyName>
     <Description>Port of libmspack to C#, with additions</Description>
     <Authors>Matt Nadareski;Stuart Caie</Authors>
     <Product>LibMSPackSharp</Product>
-    <Copyright>Copyright (c)2000-2022 Stuart Caie, Copyright (c)2022 Matt Nadareski</Copyright>
+    <Copyright>Copyright (c)2000-2023 Stuart Caie, Copyright (c)2022-2023 Matt Nadareski</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/mnadareski/LibMSPackSharp</RepositoryUrl>
     <Version>2.0.0</Version>
